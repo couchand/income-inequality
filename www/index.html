@@ -32,6 +32,9 @@ body {
     <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <span class="type"><input type="radio" name="type" id="beforeTax" value="before" checked /><label for="beforeTax">Before Tax</label></span>
     <span class="type"><input type="radio" name="type" id="afterTax" value="after" /><label for="afterTax">After Tax</label></span>
+    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <span class="metric"><input type="radio" name="metric" id="dollars" value="dollars" checked /><label for="dollars">Dollars</label></span>
+    <span class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1979</label></span>
   </div>
 <script src="http://d3js.org/colorbrewer.v1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -41,7 +44,10 @@ var width = 800,
     height = 400,
     margin = 50;
 
-var dollars = d3.format('$,0');
+var formats = {
+    dollars: d3.format('$,0'),
+    index: d3.format("0.2")
+};
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -63,11 +69,11 @@ var xAxis = d3.svg.axis()
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("right")
-    .tickFormat(dollars);
+    .tickFormat(formats.dollars);
 
 var incomeLine = d3.svg.line()
     .x(function(d) { return x(d.year); })
-    .y(function(d) { return y(d.before); });
+    .y(function(d) { return y(getValue(d)); });
 
 var byYearThenType = d3.nest()
     .key(function(d) { return d.Year; })
@@ -77,8 +83,13 @@ function getYear(d) { return d.year; }
 function getGroup(d) { return d.group; }
 function getBefore(d) { return d.before; }
 function getAfter(d) { return d.after; }
+function getDollars(d) { return d.dollars; }
+function getIndex(d) { return d.index; }
 
 var getType = getBefore;
+var getMetric = getDollars;
+
+function getValue(d) { return getType(getMetric(d)); }
 
 var byGroup = d3.nest()
     .key(getGroup);
@@ -90,9 +101,18 @@ var selectedGroups = {
 
 d3.csv("income.csv", function(error, years) {
 
-    var records = [];
+    var records = [], inverses = {};
 
     var nested = byYearThenType.map(years);
+
+    for ( var key in nested["1979"]["Before Tax"][0] ) {
+        if ( key == 'Type' || key == 'Year' ) continue;
+
+        inverses[key] = {
+            before: 1 / nested["1979"]["Before Tax"][0][key],
+            after: 1 / nested["1979"]["After Tax"][0][key]
+        };
+    }
 
     for ( var year in nested ) {
         var before = nested[year]["Before Tax"][0];
@@ -103,8 +123,14 @@ d3.csv("income.csv", function(error, years) {
             records.push({
                 year: new Date(year, 1, 1),
                 group: key,
-                before: +before[key],
-                after: +after[key]
+                dollars: {
+                    before: +before[key],
+                    after: +after[key]
+                },
+                index: {
+                    before: +before[key] * inverses[key].before,
+                    after: +after[key] * inverses[key].after
+                }
             });
         }
     }
@@ -151,7 +177,7 @@ d3.csv("income.csv", function(error, years) {
 
         y.domain( d3.extent( records.filter(function(d) {
             return d.group in selectedGroups;
-        }), getType ) );
+        }), getValue ) );
 
         svg.select(".y.axis").transition(500).call(yAxis);
 
@@ -177,14 +203,19 @@ d3.csv("income.csv", function(error, years) {
     d3.selectAll(".scale").selectAll("input").on("change", function() {
         y = ys[this.value];
         yAxis.scale(y)
-        incomeLine.y(function(d) { return y(getType(d)); });
         update();
     });
 
     d3.selectAll(".type").selectAll("input").on("change", function() {
         var type = this.value;
         getType = function(d) { return d[type]; };
-        incomeLine.y(function(d) { return y(d[type]); });
+        update();
+    });
+
+    d3.selectAll(".metric").selectAll("input").on("change", function() {
+        var metric = this.value;
+        getMetric = function(d) { return d[metric]; };
+        yAxis.tickFormat(formats[metric]);
         update();
     });
 
