@@ -100,7 +100,7 @@ d3.csv("income.csv", function(error, years) {
         .attr("width", width + 3*margin)
         .attr("height", height + 2*margin)
         .append("g")
-        .attr("transform", "translate("+(2*margin)+","+margin+")");
+        .attr("transform", "translate("+margin+","+margin+")");
 
     svg.append("g")
         .attr("class", "x axis")
