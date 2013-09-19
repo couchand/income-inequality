@@ -42,7 +42,7 @@ var y = d3.scale.linear()
     .range([height, 0]);
 
 var color = d3.scale.ordinal()
-    .range( colorbrewer.Set3[10] );
+    .range( colorbrewer.Set3[12].slice(2) );
 
 var xAxis = d3.svg.axis()
     .scale(x)
