@@ -186,11 +186,19 @@ d3.csv("income.csv", function(error, years) {
         lines.exit().transition(500)
             .attr("d", function(d) { return incomeLine(d.values); })
             .remove();
+
+        d3.selectAll("span.group")
+            .attr("style", function() {
+                var group = d3.select(this);
+                if ( true == group.select("input").property("checked") ) {
+                    return "background-color:" + color( d3.select(this).text() );
+                }
+            });
     }
 
     update();
 
-    d3.selectAll(".group").selectAll("input").on("change", function() {
+    d3.selectAll("span.group").selectAll("input").on("change", function() {
         if ( this.title in selectedGroups ) {
             delete selectedGroups[this.title];
         }
@@ -218,11 +226,6 @@ d3.csv("income.csv", function(error, years) {
         yAxis.tickFormat(formats[metric]);
         update();
     });
-
-    d3.selectAll(".group")
-        .attr("style", function() {
-            return "background-color:" + color( d3.select(this).text() );
-        });
 
 });
 
