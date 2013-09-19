@@ -35,6 +35,8 @@ var width = 800,
     height = 400,
     margin = 50;
 
+var dollars = d3.format('$,0');
+
 var x = d3.time.scale()
     .range([0, width]);
 
@@ -50,7 +52,8 @@ var xAxis = d3.svg.axis()
 
 var yAxis = d3.svg.axis()
     .scale(y)
-    .orient("right");
+    .orient("right")
+    .tickFormat(dollars);
 
 var incomeLine = d3.svg.line()
     .x(function(d) { return x(d.year); })
