@@ -29,6 +29,8 @@ body {
     <br />
     <span class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></span>
     <span class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></span>
+    <span class="type"><input type="radio" name="type" id="beforeTax" value="before" checked /><label for="beforeTax">Before Tax</label></span>
+    <span class="type"><input type="radio" name="type" id="afterTax" value="after" /><label for="afterTax">After Tax</label></span>
   </div>
 <script src="http://d3js.org/colorbrewer.v1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -74,6 +76,8 @@ function getYear(d) { return d.year; }
 function getGroup(d) { return d.group; }
 function getBefore(d) { return d.before; }
 function getAfter(d) { return d.after; }
+
+var getType = getBefore;
 
 var byGroup = d3.nest()
     .key(getGroup);
@@ -146,7 +150,7 @@ d3.csv("income.csv", function(error, years) {
 
         y.domain( d3.extent( records.filter(function(d) {
             return d.group in selectedGroups;
-        }), getBefore ) );
+        }), getType ) );
 
         svg.select(".y.axis").transition(500).call(yAxis);
 
@@ -172,7 +176,14 @@ d3.csv("income.csv", function(error, years) {
     d3.selectAll(".scale").selectAll("input").on("change", function() {
         y = ys[this.value];
         yAxis.scale(y)
-        incomeLine.y(function(d) { return y(d.before); });
+        incomeLine.y(function(d) { return y(getType(d)); });
+        update();
+    });
+
+    d3.selectAll(".type").selectAll("input").on("change", function() {
+        var type = this.value;
+        getType = function(d) { return d[type]; };
+        incomeLine.y(function(d) { return y(d[type]); });
         update();
     });
 
