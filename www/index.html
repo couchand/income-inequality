@@ -105,6 +105,15 @@ d3.csv("income.csv", function(error, years) {
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")");
 
+    svg.append("text")
+        .attr("font-size", 18)
+        .text("Average Household Income since 1979 by Income Group");
+
+    svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("transform", "translate("+(width+margin+20)+",-20)")
+        .text("Average Household Income (2009 dollars)");
+
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0,"+height+")")
