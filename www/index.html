@@ -74,7 +74,7 @@ d3.csv("income.csv", function(error, years) {
     }
 
     var groups = byGroup.entries(records).filter(function(d) {
-        return -1 != d.key.indexOf("Quintile") || d.key == "Top 1 Percent";
+        return /Quintile$/.test(d.key) || d.key == "Top 1 Percent";
     });
 
     x.domain( d3.extent( records, getYear ) );
