@@ -27,6 +27,7 @@ body {
     <input type="checkbox" name="q2" id="q2" title="Second Quintile" /><label for="q2">Second Quintile</label>
     <input type="checkbox" name="q1" id="q1" title="Lowest Quintile" /><label for="q1">Lowest Quintile</label>
   </div>
+<script src="http://d3js.org/colorbrewer.v1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
@@ -39,6 +40,9 @@ var x = d3.time.scale()
 
 var y = d3.scale.linear()
     .range([height, 0]);
+
+var color = d3.scale.ordinal()
+    .range( colorbrewer.Set3[10] );
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -118,8 +122,8 @@ d3.csv("income.csv", function(error, years) {
         lines.enter().append("path")
             .attr("class", "group")
             .attr("stroke", "none")
-            .attr("fill", "green")
-            .attr("fill-opacity", 0.3)
+            .attr("fill", function(d) { return color(d.key); })
+            .attr("fill-opacity", 0.5)
             .attr("d", function(d) { return taxes(d.values); });
 
         y.domain([0, d3.max( records.filter(function(d) {
@@ -146,6 +150,11 @@ d3.csv("income.csv", function(error, years) {
         }
         update();
     });
+
+    d3.selectAll("label")
+        .attr("style", function() {
+            return "background-color:" + color( d3.select(this).text() );
+        });
 
 });
 
