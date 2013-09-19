@@ -16,16 +16,19 @@ body {
 </style>
 <body>
   <div id="controls">
-    <input type="checkbox" name="t1" id="t1" checked title="Top 1 Percent" /><label for="t1">Top 1 Percent</label>
-    <input type="checkbox" name="99" id="99" title="96th - 99th Percentiles" /><label for="99">96th - 99th Percentiles</label>
-    <input type="checkbox" name="95" id="95" title="91st - 95th Percentiles" /><label for="95">91st - 95th Percentiles</label>
-    <input type="checkbox" name="90" id="90" title="81st - 90th Percentiles" /><label for="90">81st - 90th Percentiles</label>
-    <input type="checkbox" name="qa" id="qa" checked title="All Quintiles" /><label for="qa">All Quintiles</label>
-    <input type="checkbox" name="q5" id="q5" title="Highest Quintile" /><label for="q5">Highest Quintile</label>
-    <input type="checkbox" name="q4" id="q4" title="Fourth Quintile" /><label for="q4">Fourth Quintile</label>
-    <input type="checkbox" name="q3" id="q3" title="Middle Quintile" /><label for="q3">Middle Quintile</label>
-    <input type="checkbox" name="q2" id="q2" title="Second Quintile" /><label for="q2">Second Quintile</label>
-    <input type="checkbox" name="q1" id="q1" title="Lowest Quintile" /><label for="q1">Lowest Quintile</label>
+    <span class="group"><input type="checkbox" id="t1" checked title="Top 1 Percent" /><label for="t1">Top 1 Percent</label></span>
+    <span class="group"><input type="checkbox" id="99" title="96th - 99th Percentiles" /><label for="99">96th - 99th Percentiles</label></span>
+    <span class="group"><input type="checkbox" id="95" title="91st - 95th Percentiles" /><label for="95">91st - 95th Percentiles</label></span>
+    <span class="group"><input type="checkbox" id="90" title="81st - 90th Percentiles" /><label for="90">81st - 90th Percentiles</label></span>
+    <span class="group"><input type="checkbox" id="qa" checked title="All Quintiles" /><label for="qa">All Quintiles</label></span>
+    <span class="group"><input type="checkbox" id="q5" title="Highest Quintile" /><label for="q5">Highest Quintile</label></span>
+    <span class="group"><input type="checkbox" id="q4" title="Fourth Quintile" /><label for="q4">Fourth Quintile</label></span>
+    <span class="group"><input type="checkbox" id="q3" title="Middle Quintile" /><label for="q3">Middle Quintile</label></span>
+    <span class="group"><input type="checkbox" id="q2" title="Second Quintile" /><label for="q2">Second Quintile</label></span>
+    <span class="group"><input type="checkbox" id="q1" title="Lowest Quintile" /><label for="q1">Lowest Quintile</label></span>
+    <br />
+    <span class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></span>
+    <span class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></span>
   </div>
 <script src="http://d3js.org/colorbrewer.v1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -40,8 +43,12 @@ var dollars = d3.format('$,0');
 var x = d3.time.scale()
     .range([0, width]);
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+var ys = {
+    linear: d3.scale.linear().range([height, 0]),
+    log:    d3.scale.log().range([height, 0])
+};
+
+var y = ys.linear;
 
 var color = d3.scale.ordinal()
     .range( colorbrewer.Set3[12].slice(2) );
@@ -137,9 +144,9 @@ d3.csv("income.csv", function(error, years) {
             .attr("stroke-width", 1.5)
             .attr("d", function(d) { return incomeLine(d.values); });
 
-        y.domain([0, d3.max( records.filter(function(d) {
+        y.domain( d3.extent( records.filter(function(d) {
             return d.group in selectedGroups;
-        }), getBefore )]);
+        }), getBefore ) );
 
         svg.select(".y.axis").transition(500).call(yAxis);
 
@@ -152,7 +159,7 @@ d3.csv("income.csv", function(error, years) {
 
     update();
 
-    d3.selectAll("input").on("change", function() {
+    d3.selectAll(".group").selectAll("input").on("change", function() {
         if ( this.title in selectedGroups ) {
             delete selectedGroups[this.title];
         }
@@ -162,7 +169,14 @@ d3.csv("income.csv", function(error, years) {
         update();
     });
 
-    d3.selectAll("label")
+    d3.selectAll(".scale").selectAll("input").on("change", function() {
+        y = ys[this.value];
+        yAxis.scale(y)
+        incomeLine.y(function(d) { return y(d.before); });
+        update();
+    });
+
+    d3.selectAll(".group")
         .attr("style", function() {
             return "background-color:" + color( d3.select(this).text() );
         });
