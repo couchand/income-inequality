@@ -36,9 +36,10 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("right");
 
-var line = d3.svg.line()
+var taxes = d3.svg.area()
     .x(function(d) { return x(d.year); })
-    .y(function(d) { return y(d.before); });
+    .y0(function(d) { return y(d.after); })
+    .y1(function(d) { return y(d.before); });
 
 var byYearThenType = d3.nest()
     .key(function(d) { return d.Year; })
@@ -99,9 +100,10 @@ d3.csv("income.csv", function(error, years) {
     var lines = svg.selectAll(".group").data(groups)
         .enter().append("path")
         .attr("class", "group")
-        .attr("stroke", "black")
-        .attr("fill", "none")
-        .attr("d", function(d) { return line(d.values); });
+        .attr("stroke", "none")
+        .attr("fill", "green")
+        .attr("fill-opacity", 0.3)
+        .attr("d", function(d) { return taxes(d.values); });
 
 });
 
