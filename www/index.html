@@ -34,7 +34,7 @@ var xAxis = d3.svg.axis()
 
 var yAxis = d3.svg.axis()
     .scale(y)
-    .orient("left");
+    .orient("right");
 
 var line = d3.svg.line()
     .x(function(d) { return x(d.year); })
@@ -93,6 +93,7 @@ d3.csv("income.csv", function(error, years) {
 
     svg.append("g")
         .attr("class", "y axis")
+        .attr("transform", "translate("+width+",0)")
         .call(yAxis);
 
     var lines = svg.selectAll(".group").data(groups)
