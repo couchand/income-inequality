@@ -52,10 +52,9 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("right");
 
-var taxes = d3.svg.area()
+var incomeLine = d3.svg.line()
     .x(function(d) { return x(d.year); })
-    .y0(function(d) { return y(d.after); })
-    .y1(function(d) { return y(d.before); });
+    .y(function(d) { return y(d.before); });
 
 var byYearThenType = d3.nest()
     .key(function(d) { return d.Year; })
@@ -121,10 +120,10 @@ d3.csv("income.csv", function(error, years) {
 
         lines.enter().append("path")
             .attr("class", "group")
-            .attr("stroke", "none")
-            .attr("fill", function(d) { return color(d.key); })
-            .attr("fill-opacity", 0.5)
-            .attr("d", function(d) { return taxes(d.values); });
+            .attr("fill", "none")
+            .attr("stroke", function(d) { return color(d.key); })
+            .attr("stroke-width", 1.5)
+            .attr("d", function(d) { return incomeLine(d.values); });
 
         y.domain([0, d3.max( records.filter(function(d) {
             return d.group in selectedGroups;
@@ -132,10 +131,10 @@ d3.csv("income.csv", function(error, years) {
 
         svg.select(".y.axis").transition(500).call(yAxis);
 
-        lines.transition(500).attr("d", function(d) { return taxes(d.values); });
+        lines.transition(500).attr("d", function(d) { return incomeLine(d.values); });
 
         lines.exit().transition(500)
-            .attr("d", function(d) { return taxes(d.values); })
+            .attr("d", function(d) { return incomeLine(d.values); })
             .remove();
     }
 
