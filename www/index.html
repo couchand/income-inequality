@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 800,
+    height = 400,
+    margin = 50;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return y(d.before); });
+
+var byYearThenType = d3.nest()
+    .key(function(d) { return d.Year; })
+    .key(function(d) { return d.Type; });
+
+function getYear(d) { return d.year; }
+function getGroup(d) { return d.group; }
+function getBefore(d) { return d.before; }
+function getAfter(d) { return d.after; }
+
+var byGroup = d3.nest()
+    .key(getGroup);
+
+d3.csv("income.csv", function(error, years) {
+
+    var records = [];
+
+    var nested = byYearThenType.map(years);
+
+    for ( var year in nested ) {
+        var before = nested[year]["Before Tax"][0];
+        var after = nested[year]["After Tax"][0];
+        for ( var key in before ) {
+            if ( key == 'Type' || key == 'Year' ) continue;
+
+            records.push({
+                year: new Date(year, 1, 1),
+                group: key,
+                before: +before[key],
+                after: +after[key]
+            });
+        }
+    }
+
+    var groups = byGroup.entries(records).filter(function(d) {
+        return -1 != d.key.indexOf("Quintile") || d.key == "Top 1 Percent";
+    });
+
+    x.domain( d3.extent( records, getYear ) );
+    y.domain( d3.extent( records, getBefore ) );
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + 3*margin)
+        .attr("height", height + 2*margin)
+        .append("g")
+        .attr("transform", "translate("+(2*margin)+","+margin+")");
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0,"+height+")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    var lines = svg.selectAll(".group").data(groups)
+        .enter().append("path")
+        .attr("class", "group")
+        .attr("stroke", "black")
+        .attr("fill", "none")
+        .attr("d", function(d) { return line(d.values); });
+
+});
+
+</script>
