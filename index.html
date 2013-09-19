@@ -224,6 +224,9 @@ d3.csv("income.csv", function(error, years) {
             return "background-color:" + color( d3.select(this).text() );
         });
 
+    d3.select("body").append("div")[0][0].innerHTML =
+        "Data from <a href='http://www.cbo.gov/publication/43373'>Congressional Budget Office</a>.";
+
 });
 
 </script>
