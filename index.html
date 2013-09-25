@@ -17,25 +17,30 @@ body {
 <body>
 <a href="https://github.com/couchand/income-inequality"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
   <div id="controls">
-    <span class="group"><input type="checkbox" id="t1" checked title="Top 1 Percent" /><label for="t1">Top 1 Percent</label></span>
-    <span class="group"><input type="checkbox" id="99" title="96th - 99th Percentiles" /><label for="99">96th - 99th Percentiles</label></span>
-    <span class="group"><input type="checkbox" id="95" title="91st - 95th Percentiles" /><label for="95">91st - 95th Percentiles</label></span>
-    <span class="group"><input type="checkbox" id="90" title="81st - 90th Percentiles" /><label for="90">81st - 90th Percentiles</label></span>
-    <span class="group"><input type="checkbox" id="qa" checked title="All Quintiles" /><label for="qa">All Quintiles</label></span>
-    <span class="group"><input type="checkbox" id="q5" title="Highest Quintile" /><label for="q5">Highest Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q4" title="Fourth Quintile" /><label for="q4">Fourth Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q3" title="Middle Quintile" /><label for="q3">Middle Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q2" title="Second Quintile" /><label for="q2">Second Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q1" title="Lowest Quintile" /><label for="q1">Lowest Quintile</label></span>
-    <br />
-    <span class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></span>
-    <span class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></span>
-    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <span class="type"><input type="radio" name="type" id="beforeTax" value="before" checked /><label for="beforeTax">Before Tax</label></span>
-    <span class="type"><input type="radio" name="type" id="afterTax" value="after" /><label for="afterTax">After Tax</label></span>
-    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <span class="metric"><input type="radio" name="metric" id="dollars" value="dollars" checked /><label for="dollars">Dollars</label></span>
-    <span class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1979</label></span>
+    <table>
+      <tr>
+        <td class="group"><input type="checkbox" id="P99.99-100" title="P99.99-100" /><label for="P99.99-100">Top 0.01%</label></td>
+        <td class="group"><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">Top 0.1%</label></td>
+        <td class="group"><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">Top 0.5%</label></td>
+        <td class="group"><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">Top 1%</label></td>
+        <td class="group"><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">Top 10%</label></td>
+        <td class="group"><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">Bottom 90%</label></td>
+        <td class="group"><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">Bottom 99%</label></td>
+        <td class="group"><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">Overall Average</label></td>
+        <td class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></td>
+        <td class="metric"><input type="radio" name="metric" id="dollars" value="dollars" checked /><label for="dollars">Dollars</label></td>
+      </tr>
+      <tr>
+        <td class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">99.9-99.99%</label></td>
+        <td class="group"><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">99.5-99.9%</label></td>
+        <td class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">99-99.5%</label></td>
+        <td class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">95-99%</label></td>
+        <td class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">90-95%</label></td>
+        <td colspan=3></td>
+        <td class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></td>
+        <td class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1979</label></td>
+      </tr>
+    </table>
   </div>
 <script src="http://d3js.org/colorbrewer.v1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -76,62 +81,46 @@ var incomeLine = d3.svg.line()
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(getValue(d)); });
 
-var byYearThenType = d3.nest()
-    .key(function(d) { return d.Year; })
-    .key(function(d) { return d.Type; });
+var byYear = d3.nest()
+    .key(function(d) { return d.year; });
 
 function getYear(d) { return d.year; }
 function getGroup(d) { return d.group; }
-function getBefore(d) { return d.before; }
-function getAfter(d) { return d.after; }
 function getDollars(d) { return d.dollars; }
 function getIndex(d) { return d.index; }
 
-var getType = getBefore;
-var getMetric = getDollars;
-
-function getValue(d) { return getType(getMetric(d)); }
+var getValue = getDollars;
 
 var byGroup = d3.nest()
     .key(getGroup);
 
 var selectedGroups = {
-    "All Quintiles": 1,
-    "Top 1 Percent": 1
+    "P0-100": 1,
+    "P99-100": 1
 };
 
-d3.csv("income.csv", function(error, years) {
+d3.csv("saez.csv", function(error, years) {
 
     var records = [], inverses = {};
 
-    var nested = byYearThenType.map(years);
+    var nested = byYear.map(years);
 
-    for ( var key in nested["1979"]["Before Tax"][0] ) {
+    for ( var key in nested["1979"][0] ) {
         if ( key == 'Type' || key == 'Year' ) continue;
 
-        inverses[key] = {
-            before: 1 / nested["1979"]["Before Tax"][0][key],
-            after: 1 / nested["1979"]["After Tax"][0][key]
-        };
+        inverses[key] = 1 / nested["1979"][0][key];
     }
 
     for ( var year in nested ) {
-        var before = nested[year]["Before Tax"][0];
-        var after = nested[year]["After Tax"][0];
-        for ( var key in before ) {
+        var value = nested[year][0];
+        for ( var key in value ) {
             if ( key == 'Type' || key == 'Year' ) continue;
 
             records.push({
                 year: new Date(year, 1, 1),
                 group: key,
-                dollars: {
-                    before: +before[key],
-                    after: +after[key]
-                },
-                index: {
-                    before: +before[key] * inverses[key].before,
-                    after: +after[key] * inverses[key].after
-                }
+                dollars: +value[key],
+                index: +value[key] * inverses[key]
             });
         }
     }
@@ -146,12 +135,12 @@ d3.csv("income.csv", function(error, years) {
 
     svg.append("text")
         .attr("font-size", 18)
-        .text("Average Household Income since 1979 by Income Group");
+        .text("Average Household Income since 1917 by Income Group");
 
     svg.append("text")
         .attr("text-anchor", "end")
         .attr("transform", "translate("+(width+margin+20)+",-20)")
-        .text("Average Household Income (2009 dollars)");
+        .text("Average Real Income");
 
     svg.append("g")
         .attr("class", "x axis")
@@ -188,18 +177,18 @@ d3.csv("income.csv", function(error, years) {
             .attr("d", function(d) { return incomeLine(d.values); })
             .remove();
 
-        d3.selectAll("span.group")
+        d3.select('#controls').selectAll(".group")
             .attr("style", function() {
                 var group = d3.select(this);
                 if ( true == group.select("input").property("checked") ) {
-                    return "background-color:" + color( d3.select(this).text() );
+                    return "background-color:" + color( d3.select(this).select('input').attr('title') );
                 }
             });
     }
 
     update();
 
-    d3.selectAll("span.group").selectAll("input").on("change", function() {
+    d3.select('#controls').selectAll(".group").selectAll("input").on("change", function() {
         if ( this.title in selectedGroups ) {
             delete selectedGroups[this.title];
         }
@@ -215,15 +204,9 @@ d3.csv("income.csv", function(error, years) {
         update();
     });
 
-    d3.selectAll(".type").selectAll("input").on("change", function() {
-        var type = this.value;
-        getType = function(d) { return d[type]; };
-        update();
-    });
-
     d3.selectAll(".metric").selectAll("input").on("change", function() {
         var metric = this.value;
-        getMetric = function(d) { return d[metric]; };
+        getValue = function(d) { return d[metric]; };
         yAxis.tickFormat(formats[metric]);
         update();
     });
