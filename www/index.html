@@ -45,7 +45,7 @@ body {
         <td class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">90-95%</label></td>
         <td colspan=3></td>
         <td class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></td>
-        <td class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1979</label></td>
+        <td class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1978</label></td>
       </tr>
     </table>
   </div>
@@ -112,10 +112,10 @@ d3.csv("saez.csv", function(error, years) {
 
     var nested = byYear.map(years);
 
-    for ( var key in nested["1979"][0] ) {
+    for ( var key in nested["1978"][0] ) {
         if ( key == 'Type' || key == 'Year' ) continue;
 
-        inverses[key] = 1 / nested["1979"][0][key];
+        inverses[key] = 1 / nested["1978"][0][key];
     }
 
     for ( var year in nested ) {
