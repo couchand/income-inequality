@@ -16,16 +16,19 @@ body {
 </style>
 <body>
   <div id="controls">
-    <span class="group"><input type="checkbox" id="t1" checked title="Top 1 Percent" /><label for="t1">Top 1 Percent</label></span>
-    <span class="group"><input type="checkbox" id="99" title="96th - 99th Percentiles" /><label for="99">96th - 99th Percentiles</label></span>
-    <span class="group"><input type="checkbox" id="95" title="91st - 95th Percentiles" /><label for="95">91st - 95th Percentiles</label></span>
-    <span class="group"><input type="checkbox" id="90" title="81st - 90th Percentiles" /><label for="90">81st - 90th Percentiles</label></span>
-    <span class="group"><input type="checkbox" id="qa" checked title="All Quintiles" /><label for="qa">All Quintiles</label></span>
-    <span class="group"><input type="checkbox" id="q5" title="Highest Quintile" /><label for="q5">Highest Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q4" title="Fourth Quintile" /><label for="q4">Fourth Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q3" title="Middle Quintile" /><label for="q3">Middle Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q2" title="Second Quintile" /><label for="q2">Second Quintile</label></span>
-    <span class="group"><input type="checkbox" id="q1" title="Lowest Quintile" /><label for="q1">Lowest Quintile</label></span>
+    <span class="group"><input type="checkbox" id="P99.99-100" title="P99.99-100" /><label for="P99.99-100">P99.99-100</label></span>
+    <span class="group"><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">P99.9-100</label></span>
+    <span class="group"><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">P99.5-100</label></span>
+    <span class="group"><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">P99-100</label></span>
+    <span class="group"><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">P90-100</label></span>
+    <span class="group"><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">P0-90</label></span>
+    <span class="group"><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">P0-99</label></span>
+    <span class="group"><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">P0-100</label></span>
+    <span class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">P99.9-99.99</label></span>
+    <span class="group"><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">P99.5-99.9</label></span>
+    <span class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">P99-99.5</label></span>
+    <span class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">P95-99</label></span>
+    <span class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">P90-95</label></span>
     <br />
     <span class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></span>
     <span class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></span>
@@ -73,7 +76,7 @@ var incomeLine = d3.svg.line()
     .y(function(d) { return y(getValue(d)); });
 
 var byYear = d3.nest()
-    .key(function(d) { return d.Year; });
+    .key(function(d) { return d.year; });
 
 function getYear(d) { return d.year; }
 function getGroup(d) { return d.group; }
@@ -86,11 +89,11 @@ var byGroup = d3.nest()
     .key(getGroup);
 
 var selectedGroups = {
-    "All Quintiles": 1,
-    "Top 1 Percent": 1
+    "P0-100": 1,
+    "P99-100": 1
 };
 
-d3.csv("income.csv", function(error, years) {
+d3.csv("saez.csv", function(error, years) {
 
     var records = [], inverses = {};
 
@@ -126,12 +129,12 @@ d3.csv("income.csv", function(error, years) {
 
     svg.append("text")
         .attr("font-size", 18)
-        .text("Average Household Income since 1979 by Income Group");
+        .text("Average Household Income since 1917 by Income Group");
 
     svg.append("text")
         .attr("text-anchor", "end")
         .attr("transform", "translate("+(width+margin+20)+",-20)")
-        .text("Average Household Income (2009 dollars)");
+        .text("Average Real Income");
 
     svg.append("g")
         .attr("class", "x axis")
