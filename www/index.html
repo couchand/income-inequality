@@ -16,25 +16,30 @@ body {
 </style>
 <body>
   <div id="controls">
-    <span class="group"><input type="checkbox" id="P99.99-100" title="P99.99-100" /><label for="P99.99-100">P99.99-100</label></span>
-    <span class="group"><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">P99.9-100</label></span>
-    <span class="group"><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">P99.5-100</label></span>
-    <span class="group"><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">P99-100</label></span>
-    <span class="group"><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">P90-100</label></span>
-    <span class="group"><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">P0-90</label></span>
-    <span class="group"><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">P0-99</label></span>
-    <span class="group"><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">P0-100</label></span>
-    <span class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">P99.9-99.99</label></span>
-    <span class="group"><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">P99.5-99.9</label></span>
-    <span class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">P99-99.5</label></span>
-    <span class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">P95-99</label></span>
-    <span class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">P90-95</label></span>
-    <br />
-    <span class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></span>
-    <span class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></span>
-    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <span class="metric"><input type="radio" name="metric" id="dollars" value="dollars" checked /><label for="dollars">Dollars</label></span>
-    <span class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1979</label></span>
+    <table>
+      <tr>
+        <td class="group"><input type="checkbox" id="P99.99-100" title="P99.99-100" /><label for="P99.99-100">P99.99-100</label></td>
+        <td class="group"><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">P99.9-100</label></td>
+        <td class="group"><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">P99.5-100</label></td>
+        <td class="group"><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">P99-100</label></td>
+        <td class="group"><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">P90-100</label></td>
+        <td class="group"><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">P0-90</label></td>
+        <td class="group"><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">P0-99</label></td>
+        <td class="group"><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">P0-100</label></td>
+        <td class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></td>
+        <td class="metric"><input type="radio" name="metric" id="dollars" value="dollars" checked /><label for="dollars">Dollars</label></td>
+      </tr>
+      <tr>
+        <td class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">P99.9-99.99</label></td>
+        <td class="group"><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">P99.5-99.9</label></td>
+        <td class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">P99-99.5</label></td>
+        <td class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">P95-99</label></td>
+        <td class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">P90-95</label></td>
+        <td colspan=3></td>
+        <td class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></td>
+        <td class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1979</label></td>
+      </tr>
+    </table>
   </div>
 <script src="http://d3js.org/colorbrewer.v1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -171,7 +176,7 @@ d3.csv("saez.csv", function(error, years) {
             .attr("d", function(d) { return incomeLine(d.values); })
             .remove();
 
-        d3.selectAll("span.group")
+        d3.select('#controls').selectAll(".group")
             .attr("style", function() {
                 var group = d3.select(this);
                 if ( true == group.select("input").property("checked") ) {
@@ -182,7 +187,7 @@ d3.csv("saez.csv", function(error, years) {
 
     update();
 
-    d3.selectAll("span.group").selectAll("input").on("change", function() {
+    d3.select('#controls').selectAll(".group").selectAll("input").on("change", function() {
         if ( this.title in selectedGroups ) {
             delete selectedGroups[this.title];
         }
