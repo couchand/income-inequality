@@ -59,7 +59,7 @@ var width = 800,
 
 var formats = {
     dollars: d3.format('$,0'),
-    index: d3.format("0.2")
+    index: d3.format("0.2f")
 };
 
 var x = d3.time.scale()
@@ -97,6 +97,7 @@ function getDollars(d) { return d.dollars; }
 function getIndex(d) { return d.index; }
 
 var getValue = getDollars;
+var metric = 'dollars';
 
 var byGroup = d3.nest()
     .key(getGroup);
@@ -181,7 +182,7 @@ d3.csv("saez.csv", function(error, years) {
         labels
             .attr("x", x(selectedYear))
             .attr("y", function(d) { return y(getValue(d.values[0])); })
-            .text(function(d) { return getValue(d.values[0]); });
+            .text(function(d) { return formats[metric](getValue(d.values[0])); });
     }
 
     var covers = svg.append("g");
@@ -252,7 +253,7 @@ d3.csv("saez.csv", function(error, years) {
     });
 
     d3.selectAll(".metric").selectAll("input").on("change", function() {
-        var metric = this.value;
+        metric = this.value;
         getValue = function(d) { return d[metric]; };
         yAxis.tickFormat(formats[metric]);
         update();
