@@ -199,6 +199,10 @@ d3.csv("saez.csv", function(error, years) {
             .on("mouseover", labelData);
     }
 
+    svg.on("mouseout", function() {
+        g.selectAll(".data-label").remove();
+    });
+
     function update() {
         var groups = byGroup.entries(records).filter(function(d) {
             return d.key in selectedGroups;
