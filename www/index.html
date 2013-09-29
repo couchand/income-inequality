@@ -124,7 +124,7 @@ d3.csv("saez.csv", function(error, years) {
             if ( key == 'Type' || key == 'Year' ) continue;
 
             records.push({
-                year: new Date(year, 1, 1),
+                year: new Date(year, 0, 1),
                 group: key,
                 dollars: +value[key],
                 index: +value[key] * inverses[key]
