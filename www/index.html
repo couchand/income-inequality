@@ -18,11 +18,13 @@ body {
 }
 
 .data-label rect {
-    opacity: 0.5;
+    fill-opacity: 0.5;
+    stroke-width: 1.5px;
 }
 
 .data-link {
     fill: none;
+    stroke-width: 1.5px;
 }
 
 </style>
@@ -255,6 +257,7 @@ d3.csv("saez.csv", function(error, years) {
             .attr("width", 70)
             .attr("height", 22)
             .attr("y", -15)
+            .attr("stroke", function(d) { return color(d.group); })
             .attr("fill", function(d) { return color(d.group); });
 
         labelEnter.append("text")
