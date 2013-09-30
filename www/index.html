@@ -27,8 +27,18 @@ body {
     stroke-width: 1.5px;
 }
 
+#viz {
+    float: left;
+}
+
+#controls{
+    float: left;
+    height: 470px;
+}
+
 table {
-    display: inline-block;
+    width: 100%;
+    margin-bottom: 4%;
     border-spacing: 0;
     border-collapse: collapse;
 }
@@ -51,7 +61,7 @@ td.group {
 
 td.scale, td.metric {
     padding: 10px;
-    width: 120px;
+    width: 50%;
 }
 
 </style>
@@ -60,29 +70,31 @@ td.scale, td.metric {
   <div id="controls">
     <table>
       <tr>
-        <th colspan=7>Income Groups</th>
+        <th colspan=3>Income Groups</th>
       </tr>
       <tr>
         <td class="group"><input type="checkbox" id="P99.99-100" title="P99.99-100" /><label for="P99.99-100">Top 0.01%</label></td>
         <td class="group" rowspan=2><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">Top 0.1%</label></td>
         <td class="group" rowspan=3><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">Top 0.5%</label></td>
-        <td class="group" rowspan=4 colspan=2><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">Top 1%</label></td>
-        <td class="group" rowspan=6><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">Top 10%</label></td>
-        <td class="group" rowspan=8><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">Overall Average</label></td>
       </tr>
       <tr>
         <td class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">Next 0.09%</label></td>
-        <td class="filler" rowspan=7 colspan=2></td>
       </tr>
       <tr>
-        <td class="filler" rowspan=6></td>
+        <td class="filler" rowspan=2></td>
         <td class="group" rowspan=2><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">Next 0.9%</label></td>
       </tr>
       <tr>
         <td class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">Next 0.5%</label></td>
       </tr>
+    </table>
+    <table>
       <tr>
-        <td class="group" rowspan=3 colspan=3><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">Bottom 99%</label></td>
+        <td class="group" colspan=2><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">Top 1%</label></td>
+        <td class="group" rowspan=3><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">Top 10%</label></td>
+      </tr>
+      <tr>
+        <td class="group" rowspan=3><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">Bottom 99%</label></td>
         <td class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">Next 4%</label></td>
       </tr>
       <tr>
@@ -90,6 +102,11 @@ td.scale, td.metric {
       </tr>
       <tr>
         <td class="group" colspan=2><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">Bottom 90%</label></td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td class="group"><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">Overall Average</label></td>
       </tr>
     </table>
     <table>
