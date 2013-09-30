@@ -21,6 +21,10 @@ body {
     opacity: 0.2;
 }
 
+.data-label rect {
+    opacity: 0.5;
+}
+
 </style>
 <body>
   <div id="controls">
@@ -87,6 +91,13 @@ var yAxis = d3.svg.axis()
 var incomeLine = d3.svg.line()
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(getValue(d)); });
+
+var labelForce = d3.layout.force()
+    .size([width*3, height])
+    .linkDistance(0.5)
+    .friction(0.5)
+    .gravity(0.05)
+    .charge(-500);
 
 var byYear = d3.nest()
     .key(function(d) { return d.year; });
@@ -162,6 +173,8 @@ d3.csv("saez.csv", function(error, years) {
         .attr("class", "y axis")
         .attr("transform", "translate("+width+",0)");
 
+    labelsByGroup = {};
+
     function labelData() {
         var selectedYear = this.__data__;
 
@@ -171,18 +184,63 @@ d3.csv("saez.csv", function(error, years) {
             return d.key in selectedGroups;
         });
 
-        var labels = g.selectAll(".data-label")
-            .data(groups, function(d) { return d.key; });
+        var nodes = [], edges = [], labels = [];
 
-        labels.enter().append("text")
+        groups.forEach(function(group) {
+            var dot = {
+                x: x(selectedYear),
+                y: y(getValue(group.values[0])),
+                fixed: true
+            };
+            var label = labelsByGroup[group.key] || {
+                x: dot.x + 5,
+                y: dot.y,
+                group: group.key
+            };
+            label.value = getValue(group.values[0]);
+            var edge = {
+                source: dot,
+                target: label
+            };
+            nodes.push( dot );
+            nodes.push( label );
+            labels.push( label );
+            labelsByGroup[group.key] = label;
+            edges.push( edge );
+        });
+
+        var label = g.selectAll(".data-label")
+            .data(labels, function(d) { return d.group; });
+
+        var labelEnter = label.enter().append("g")
             .attr("class", "data-label");
 
-        labels.exit().remove();
+        labelEnter.append("rect")
+            .attr("width", 70)
+            .attr("height", 22)
+            .attr("y", -15)
+            .attr("fill", function(d) { return color(d.group); });
 
-        labels
-            .attr("x", x(selectedYear))
-            .attr("y", function(d) { return y(getValue(d.values[0])); })
-            .text(function(d) { return formats[metric](getValue(d.values[0])); });
+        labelEnter.append("text")
+            .attr("x", 10);
+
+        label.selectAll("text")
+            .text(function(d) { return formats[metric](d.value); });
+
+        label.exit().remove();
+
+        updateLabels();
+
+        function updateLabels() {
+            label
+                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        }
+
+        labelForce
+            .nodes( nodes )
+            .links( edges )
+            .on("tick", updateLabels)
+            .start();
     }
 
     var covers = svg.append("g");
