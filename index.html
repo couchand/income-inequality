@@ -13,6 +13,20 @@ body {
     shape-rendering: crispEdges;
 }
 
+.cover {
+    opacity: 0;
+}
+
+.data-label rect {
+    fill-opacity: 0.5;
+    stroke-width: 1.5px;
+}
+
+.data-link {
+    fill: none;
+    stroke-width: 1.5px;
+}
+
 </style>
 <body>
 <a href="https://github.com/couchand/income-inequality"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
@@ -20,25 +34,36 @@ body {
     <table>
       <tr>
         <td class="group"><input type="checkbox" id="P99.99-100" title="P99.99-100" /><label for="P99.99-100">Top 0.01%</label></td>
-        <td class="group"><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">Top 0.1%</label></td>
-        <td class="group"><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">Top 0.5%</label></td>
-        <td class="group"><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">Top 1%</label></td>
-        <td class="group"><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">Top 10%</label></td>
-        <td class="group"><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">Bottom 90%</label></td>
-        <td class="group"><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">Bottom 99%</label></td>
-        <td class="group"><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">Overall Average</label></td>
+        <td class="group" rowspan=2><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">Top 0.1%</label></td>
+        <td class="group" rowspan=3><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">Top 0.5%</label></td>
+        <td class="group" rowspan=4 colspan=2><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">Top 1%</label></td>
+        <td class="group" rowspan=6><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">Top 10%</label></td>
+        <td class="group" rowspan=8><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">Overall Average</label></td>
         <td class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></td>
         <td class="metric"><input type="radio" name="metric" id="dollars" value="dollars" checked /><label for="dollars">Dollars</label></td>
       </tr>
       <tr>
-        <td class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">99.9-99.99%</label></td>
-        <td class="group"><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">99.5-99.9%</label></td>
-        <td class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">99-99.5%</label></td>
-        <td class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">95-99%</label></td>
-        <td class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">90-95%</label></td>
-        <td colspan=3></td>
+        <td class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">Next 0.09%</label></td>
         <td class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></td>
-        <td class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1979</label></td>
+        <td class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1978</label></td>
+      </tr>
+      <tr>
+        <td rowspan=6></td>
+        <td class="group" rowspan=2><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">Next 0.9%</label></td>
+        <td rowspan=6 colspan=2></td>
+      </tr>
+      <tr>
+        <td class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">Next 0.5%</label></td>
+      </tr>
+      <tr>
+        <td class="group" rowspan=3 colspan=3><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">Bottom 99%</label></td>
+        <td class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">Next 4%</label></td>
+      </tr>
+      <tr>
+        <td class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">Next 5%</label></td>
+      </tr>
+      <tr>
+        <td class="group" colspan=2><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">Bottom 90%</label></td>
       </tr>
     </table>
   </div>
@@ -52,7 +77,7 @@ var width = 800,
 
 var formats = {
     dollars: d3.format('$,0'),
-    index: d3.format("0.2")
+    index: d3.format("0.2f")
 };
 
 var x = d3.time.scale()
@@ -81,6 +106,13 @@ var incomeLine = d3.svg.line()
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(getValue(d)); });
 
+var labelForce = d3.layout.force()
+    .size([width*2, height])
+    .linkDistance(0.25)
+    .friction(0.5)
+    .gravity(0.05)
+    .charge(-100);
+
 var byYear = d3.nest()
     .key(function(d) { return d.year; });
 
@@ -90,6 +122,7 @@ function getDollars(d) { return d.dollars; }
 function getIndex(d) { return d.index; }
 
 var getValue = getDollars;
+var metric = 'dollars';
 
 var byGroup = d3.nest()
     .key(getGroup);
@@ -105,10 +138,10 @@ d3.csv("saez.csv", function(error, years) {
 
     var nested = byYear.map(years);
 
-    for ( var key in nested["1979"][0] ) {
+    for ( var key in nested["1978"][0] ) {
         if ( key == 'Type' || key == 'Year' ) continue;
 
-        inverses[key] = 1 / nested["1979"][0][key];
+        inverses[key] = 1 / nested["1978"][0][key];
     }
 
     for ( var year in nested ) {
@@ -117,7 +150,7 @@ d3.csv("saez.csv", function(error, years) {
             if ( key == 'Type' || key == 'Year' ) continue;
 
             records.push({
-                year: new Date(year, 1, 1),
+                year: new Date(year, 0, 1),
                 group: key,
                 dollars: +value[key],
                 index: +value[key] * inverses[key]
@@ -125,7 +158,8 @@ d3.csv("saez.csv", function(error, years) {
         }
     }
 
-    x.domain( d3.extent( records, getYear ) );
+    var yearExtent = d3.extent( records, getYear );
+    x.domain( yearExtent );
 
     var svg = d3.select("body").append("svg")
         .attr("width", width + 3*margin)
@@ -142,6 +176,8 @@ d3.csv("saez.csv", function(error, years) {
         .attr("transform", "translate("+(width+margin+20)+",-20)")
         .text("Average Real Income");
 
+    var g = svg.append('g');
+
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0,"+height+")")
@@ -151,12 +187,141 @@ d3.csv("saez.csv", function(error, years) {
         .attr("class", "y axis")
         .attr("transform", "translate("+width+",0)");
 
+    var labelsByGroup = {}, middlesByGroup = {};
+
+    function labelData() {
+        var selectedYear = this.__data__;
+
+        var groups = byGroup.entries(records.filter(function(d) {
+            return d.year.getFullYear() == selectedYear.getFullYear();
+        })).filter(function(d) {
+            return d.key in selectedGroups;
+        });
+
+        var nodes = [], edges = [], dots = [], labels = [], bilinks = [];
+
+        groups.forEach(function(group) {
+            var dot = {
+                x: x(selectedYear),
+                y: y(getValue(group.values[0])),
+                group: group.key,
+                fixed: true
+            };
+            var label = labelsByGroup[group.key] || {
+                x: dot.x + 5,
+                y: dot.y,
+                group: group.key
+            };
+            label.value = getValue(group.values[0]);
+            var middle = middlesByGroup[group.key] || {
+                x: (dot.x + label.x) / 2,
+                y: (dot.y + label.y) / 2
+            };
+            nodes.push( dot );
+            nodes.push( middle );
+            nodes.push( label );
+
+            dots.push( dot );
+
+            labels.push( label );
+            labelsByGroup[group.key] = label;
+            middlesByGroup[group.key] = middle;
+
+            edges.push(
+                { source: dot, target: middle },
+                { source: middle, target: label }
+            );
+
+            var bilink = [ dot, middle, label ];
+            bilink.group = group.key;
+            bilinks.push(bilink);
+        });
+
+        var dot = g.selectAll(".data-dot")
+            .data(dots, function(d) { return d.group; });
+
+        dot.enter().append("circle")
+            .attr("class", "data-dot")
+            .attr("r", 3)
+            .attr("fill", function(d) { return color(d.group); });
+
+        dot.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
+
+        var label = g.selectAll(".data-label")
+            .data(labels, function(d) { return d.group; });
+
+        var labelEnter = label.enter().append("g")
+            .attr("class", "data-label");
+
+        labelEnter.append("rect")
+            .attr("width", 70)
+            .attr("height", 22)
+            .attr("y", -15)
+            .attr("stroke", function(d) { return color(d.group); })
+            .attr("fill", function(d) { return color(d.group); });
+
+        labelEnter.append("text")
+            .attr("x", 10);
+
+        label.selectAll("text")
+            .text(function(d) { return formats[metric](d.value); });
+
+        label.exit().remove();
+
+        var link = g.selectAll(".data-link")
+            .data(bilinks, function(d) { return d.group; });
+
+        link.enter().append("path")
+            .attr("stroke", function(d) { return color(d.group); })
+            .attr("class", "data-link");
+
+        link.exit().remove();
+
+        updateLabels();
+
+        function updateLabels() {
+            label.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            link.attr("d", function(d) {
+                return "M" + d[0].x + "," + d[0].y +
+                       "S" + d[1].x + "," + d[1].y +
+                       " " + d[2].x + "," + d[2].y;
+            });
+        }
+
+        labelForce
+            .nodes( nodes )
+            .links( edges )
+            .on("tick", updateLabels)
+            .start();
+    }
+
+    var covers = svg.append("g");
+
+    var rectWidth = x(new Date(1980,1,1)) - x(new Date(1979,1,1));
+
+    for ( var next = yearExtent[0]; next <= yearExtent[1]; next.setFullYear( next.getFullYear() + 1 ) ) {
+        covers.append("rect")
+            .attr("class", "cover")
+            .datum(new Date(next))
+            .attr("x", x(next) - rectWidth/2)
+            .attr("width", rectWidth)
+            .attr("height", height)
+            .on("mouseover", labelData);
+    }
+
+    svg.on("mouseout", function() {
+        g.selectAll(".data-label").remove();
+        g.selectAll(".data-dot").remove();
+        g.selectAll(".data-link").remove();
+    });
+
     function update() {
         var groups = byGroup.entries(records).filter(function(d) {
             return d.key in selectedGroups;
         });
 
-        var lines = svg.selectAll(".group").data(groups, function(d) { return d.key; });
+        var lines = g.selectAll(".group").data(groups, function(d) { return d.key; });
 
         lines.enter().append("path")
             .attr("class", "group")
@@ -205,7 +370,7 @@ d3.csv("saez.csv", function(error, years) {
     });
 
     d3.selectAll(".metric").selectAll("input").on("change", function() {
-        var metric = this.value;
+        metric = this.value;
         getValue = function(d) { return d[metric]; };
         yAxis.tickFormat(formats[metric]);
         update();
