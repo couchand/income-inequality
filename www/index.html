@@ -106,10 +106,10 @@ var incomeLine = d3.svg.line()
     .y(function(d) { return y(getValue(d)); });
 
 var labelForce = d3.layout.force()
-    .size([width*3, height])
+    .size([width*2, height])
     .linkDistance(0.25)
     .friction(0.5)
-    .gravity(0.01)
+    .gravity(0.05)
     .charge(-100);
 
 var byYear = d3.nest()
