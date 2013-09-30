@@ -329,7 +329,7 @@ d3.csv("saez.csv", function(error, years) {
             .attr("fill", function(d) { return color(d.group); });
 
         labelEnter.append("text")
-            .attr("x", 10);
+            .attr("x", 6);
 
         label.selectAll("text")
             .text(function(d) { return formats[metric](d.value); });
