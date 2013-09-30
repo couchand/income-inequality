@@ -27,25 +27,37 @@ body {
     <table>
       <tr>
         <td class="group"><input type="checkbox" id="P99.99-100" title="P99.99-100" /><label for="P99.99-100">Top 0.01%</label></td>
-        <td class="group"><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">Top 0.1%</label></td>
-        <td class="group"><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">Top 0.5%</label></td>
-        <td class="group"><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">Top 1%</label></td>
-        <td class="group"><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">Top 10%</label></td>
-        <td class="group"><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">Bottom 90%</label></td>
-        <td class="group"><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">Bottom 99%</label></td>
-        <td class="group"><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">Overall Average</label></td>
+        <td class="group" rowspan=2><input type="checkbox" id="P99.9-100" title="P99.9-100" /><label for="P99.9-100">Top 0.1%</label></td>
+        <td class="group" rowspan=3><input type="checkbox" id="P99.5-100" title="P99.5-100" /><label for="P99.5-100">Top 0.5%</label></td>
+        <td class="group" rowspan=4 colspan=2><input type="checkbox" id="P99-100" checked title="P99-100" /><label for="P99-100">Top 1%</label></td>
+        <td class="group" rowspan=6><input type="checkbox" id="P90-100" title="P90-100" /><label for="P90-100">Top 10%</label></td>
+        <td class="group" rowspan=8><input type="checkbox" id="P0-100" checked title="P0-100" /><label for="P0-100">Overall Average</label></td>
         <td class="scale"><input type="radio" name="scale" id="linearScale" value="linear" checked /><label for="linearScale">Linear</label></td>
         <td class="metric"><input type="radio" name="metric" id="dollars" value="dollars" checked /><label for="dollars">Dollars</label></td>
       </tr>
       <tr>
-        <td class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">99.9-99.99%</label></td>
-        <td class="group"><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">99.5-99.9%</label></td>
-        <td class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">99-99.5%</label></td>
-        <td class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">95-99%</label></td>
-        <td class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">90-95%</label></td>
-        <td colspan=3></td>
+        <td class="group"><input type="checkbox" id="P99.9-99.99" title="P99.9-99.99" /><label for="P99.9-99.99">Next 0.09%</label></td>
         <td class="scale"><input type="radio" name="scale" id="logScale" value="log" /><label for="logScale">Log</label></td>
         <td class="metric"><input type="radio" name="metric" id="index" value="index" /><label for="index">Index to 1978</label></td>
+      </tr>
+      <tr>
+        <td rowspan=6></td>
+        <td class="group" rowspan=2><input type="checkbox" id="P99.5-99.9" title="P99.5-99.9" /><label for="P99.5-99.9">Next 0.9%</label></td>
+        <td rowspan=6 colspan=2></td>
+      </tr>
+      <tr>
+        <td class="group"><input type="checkbox" id="P99-99.5" title="P99-99.5" /><label for="P99-99.5">Next 0.5%</label></td>
+      </tr>
+      <tr>
+        <td rowspan=4 colspan=2></td>
+        <td class="group" rowspan=3><input type="checkbox" id="P0-99" title="P0-99" /><label for="P0-99">Bottom 99%</label></td>
+        <td class="group"><input type="checkbox" id="P95-99" title="P95-99" /><label for="P95-99">Next 4%</label></td>
+      </tr>
+      <tr>
+        <td class="group"><input type="checkbox" id="P90-95" title="P90-95" /><label for="P90-95">Next 5%</label></td>
+      </tr>
+      <tr>
+        <td class="group" colspan=2><input type="checkbox" id="P0-90" title="P0-90" /><label for="P0-90">Bottom 90%</label></td>
       </tr>
     </table>
   </div>
