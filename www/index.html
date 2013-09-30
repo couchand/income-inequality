@@ -21,6 +21,10 @@ body {
     opacity: 0.5;
 }
 
+.data-link {
+    fill: none;
+}
+
 </style>
 <body>
   <div id="controls">
@@ -102,10 +106,10 @@ var incomeLine = d3.svg.line()
 
 var labelForce = d3.layout.force()
     .size([width*3, height])
-    .linkDistance(0.5)
+    .linkDistance(0.25)
     .friction(0.5)
-    .gravity(0.05)
-    .charge(-500);
+    .gravity(0.01)
+    .charge(-100);
 
 var byYear = d3.nest()
     .key(function(d) { return d.year; });
@@ -181,7 +185,7 @@ d3.csv("saez.csv", function(error, years) {
         .attr("class", "y axis")
         .attr("transform", "translate("+width+",0)");
 
-    labelsByGroup = {};
+    var labelsByGroup = {}, middlesByGroup = {};
 
     function labelData() {
         var selectedYear = this.__data__;
@@ -192,7 +196,7 @@ d3.csv("saez.csv", function(error, years) {
             return d.key in selectedGroups;
         });
 
-        var nodes = [], edges = [], dots = [], labels = [];
+        var nodes = [], edges = [], dots = [], labels = [], bilinks = [];
 
         groups.forEach(function(group) {
             var dot = {
@@ -207,16 +211,28 @@ d3.csv("saez.csv", function(error, years) {
                 group: group.key
             };
             label.value = getValue(group.values[0]);
-            var edge = {
-                source: dot,
-                target: label
+            var middle = middlesByGroup[group.key] || {
+                x: (dot.x + label.x) / 2,
+                y: (dot.y + label.y) / 2
             };
             nodes.push( dot );
-            dots.push( dot );
+            nodes.push( middle );
             nodes.push( label );
+
+            dots.push( dot );
+
             labels.push( label );
             labelsByGroup[group.key] = label;
-            edges.push( edge );
+            middlesByGroup[group.key] = middle;
+
+            edges.push(
+                { source: dot, target: middle },
+                { source: middle, target: label }
+            );
+
+            var bilink = [ dot, middle, label ];
+            bilink.group = group.key;
+            bilinks.push(bilink);
         });
 
         var dot = g.selectAll(".data-dot")
@@ -250,11 +266,24 @@ d3.csv("saez.csv", function(error, years) {
 
         label.exit().remove();
 
+        var link = g.selectAll(".data-link")
+            .data(bilinks, function(d) { return d.group; });
+
+        link.enter().append("path")
+            .attr("stroke", function(d) { return color(d.group); })
+            .attr("class", "data-link");
+
+        link.exit().remove();
+
         updateLabels();
 
         function updateLabels() {
-            label
-                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            label.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            link.attr("d", function(d) {
+                return "M" + d[0].x + "," + d[0].y +
+                       "S" + d[1].x + "," + d[1].y +
+                       " " + d[2].x + "," + d[2].y;
+            });
         }
 
         labelForce
@@ -281,6 +310,7 @@ d3.csv("saez.csv", function(error, years) {
     svg.on("mouseout", function() {
         g.selectAll(".data-label").remove();
         g.selectAll(".data-dot").remove();
+        g.selectAll(".data-link").remove();
     });
 
     function update() {
