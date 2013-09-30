@@ -210,7 +210,7 @@ d3.csv("saez.csv", function(error, years) {
     x.domain( yearExtent );
 
     var svg = d3.select("#viz").append("svg")
-        .attr("width", width + 3*margin)
+        .attr("width", width + 5*margin)
         .attr("height", height + 2*margin)
         .append("g")
         .attr("transform", "translate("+(2*margin)+","+margin+")");
