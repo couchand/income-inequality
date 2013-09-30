@@ -184,12 +184,13 @@ d3.csv("saez.csv", function(error, years) {
             return d.key in selectedGroups;
         });
 
-        var nodes = [], edges = [], labels = [];
+        var nodes = [], edges = [], dots = [], labels = [];
 
         groups.forEach(function(group) {
             var dot = {
                 x: x(selectedYear),
                 y: y(getValue(group.values[0])),
+                group: group.key,
                 fixed: true
             };
             var label = labelsByGroup[group.key] || {
@@ -203,11 +204,23 @@ d3.csv("saez.csv", function(error, years) {
                 target: label
             };
             nodes.push( dot );
+            dots.push( dot );
             nodes.push( label );
             labels.push( label );
             labelsByGroup[group.key] = label;
             edges.push( edge );
         });
+
+        var dot = g.selectAll(".data-dot")
+            .data(dots, function(d) { return d.group; });
+
+        dot.enter().append("circle")
+            .attr("class", "data-dot")
+            .attr("r", 3)
+            .attr("fill", function(d) { return color(d.group); });
+
+        dot.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
 
         var label = g.selectAll(".data-label")
             .data(labels, function(d) { return d.group; });
