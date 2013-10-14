@@ -187,7 +187,7 @@ function getDollars(d) { return d.dollars; }
 function getIndex(d) { return d.index; }
 
 var getValue = getDollars;
-var metric = 'dollars';
+var metric = 'dollars', scale = 'linear';
 
 var byGroup = d3.nest()
     .key(getGroup);
@@ -397,9 +397,15 @@ d3.csv("saez.csv", function(error, years) {
             .attr("stroke-width", 1.5)
             .attr("d", function(d) { return incomeLine(d.values); });
 
-        y.domain( d3.extent( records.filter(function(d) {
+        var extent = d3.extent( records.filter(function(d) {
             return d.group in selectedGroups;
-        }), getValue ) );
+        }), getValue );
+
+        if ( metric === 'dollars' && scale === 'linear' ) {
+            extent[0] = 0;
+        }
+
+        y.domain( extent );
 
         svg.select(".y.axis").transition(500).call(yAxis);
 
@@ -431,6 +437,7 @@ d3.csv("saez.csv", function(error, years) {
     });
 
     d3.selectAll(".scale").selectAll("input").on("change", function() {
+        scale = this.value;
         y = ys[this.value];
         yAxis.scale(y)
         update();
